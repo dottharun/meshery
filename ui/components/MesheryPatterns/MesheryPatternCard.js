@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
-import { Avatar, Divider, Grid, IconButton, Typography, Link } from '@material-ui/core';
-import { CustomTooltip } from '@layer5/sistent';
+import { Avatar, Divider, Grid, IconButton, Link } from '@material-ui/core';
+import {
+  Button,
+  CustomTooltip,
+  EditIcon,
+  InfoIcon,
+  OutlinedPatternIcon,
+  Typography,
+  WHITE,
+} from '@layer5/sistent';
+import { UsesSistent } from '../SistentWrapper';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Save from '@material-ui/icons/Save';
 import Fullscreen from '@material-ui/icons/Fullscreen';
@@ -14,13 +23,10 @@ import DoneAllIcon from '@material-ui/icons/DoneAll';
 import useStyles from './Cards.styles';
 import YAMLDialog from '../YamlDialog';
 import PublicIcon from '@material-ui/icons/Public';
-import TooltipButton from '@/utils/TooltipButton';
 import CloneIcon from '../../public/static/img/CloneIcon';
 import { VISIBILITY } from '@/utils/Enum';
 import { useTheme } from '@material-ui/core/styles';
 import { useRouter } from 'next/router';
-import { Edit } from '@material-ui/icons';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import { MESHERY_CLOUD_PROD } from '../../constants/endpoints';
 import { useGetUserByIdQuery } from '../../rtk-query/user';
 import { Provider } from 'react-redux';
@@ -113,7 +119,7 @@ function MesheryPatternCard_({
         }
       >
         {/* FRONT PART */}
-        <div>
+        <UsesSistent>
           <div>
             <div style={{ height: 'max', display: 'flex', justifyContent: 'space-between' }}>
               <Typography
@@ -154,114 +160,90 @@ function MesheryPatternCard_({
           </div>
           <div className={classes.bottomPart}>
             <div className={classes.cardButtons}>
-              {canPublishPattern && visibility === VISIBILITY.PUBLISHED && (
-                <TooltipButton
-                  variant="contained"
-                  title="Unpublish"
+              <CustomTooltip title="Design Information" placement="top" interactive>
+                <Button
+                  variant="outlined"
+                  onClick={(ev) => genericClickHandler(ev, handleInfoModal)}
                   className={classes.testsButton}
-                  onClick={(ev) => genericClickHandler(ev, handleUnpublishModal)}
-                  disabled={!CAN(keys.UNPUBLISH_DESIGN.action, keys.UNPUBLISH_DESIGN.subject)}
+                  disabled={!CAN(keys.DETAILS_OF_DESIGN.action, keys.DETAILS_OF_DESIGN.subject)}
                 >
-                  <PublicIcon className={classes.iconPatt} />
-                  <span className={classes.btnText}> Unpublish </span>
-                </TooltipButton>
-              )}
+                  <InfoIcon style={{ fill: WHITE }} className={classes.iconPatt} />
+                  <span className={classes.btnText}> Details </span>
+                </Button>
+              </CustomTooltip>
               <ActionButton
-                defaultActionClick={(e) => genericClickHandler(e, handleVerify)}
+                defaultActionClick={(e) => genericClickHandler(e, editInConfigurator)}
+                defaultActionLabel="Edit"
+                defaultActionIcon={<EditIcon className={classes.iconPatt} />}
+                defaultActionTooltipTitle={'Edit in Configurator'}
+                defaultActionDisabled={!userCanEdit}
                 options={[
-                  {
-                    label: 'Validate',
-                    icon: <CheckIcon className={classes.iconPatt} />,
-                    onClick: (e) => genericClickHandler(e, handleVerify),
-                    disabled: !CAN(keys.VALIDATE_DESIGN.action, keys.VALIDATE_DESIGN.subject),
-                  },
                   {
                     label: 'Dry Run',
                     icon: <DryRunIcon className={classes.iconPatt} />,
                     onClick: (e) => genericClickHandler(e, handleDryRun),
                     disabled: !CAN(keys.VALIDATE_DESIGN.action, keys.VALIDATE_DESIGN.subject),
+                    show: true,
+                  },
+                  {
+                    label: 'Unpublish',
+                    icon: <PublicIcon className={classes.iconPatt} />,
+                    onClick: (e) => genericClickHandler(e, handleUnpublishModal),
+                    disabled: !CAN(keys.UNPUBLISH_DESIGN.action, keys.UNPUBLISH_DESIGN.subject),
+                    show: canPublishPattern && visibility === VISIBILITY.PUBLISHED,
+                  },
+                  {
+                    label: 'Clone',
+                    icon: (
+                      <CloneIcon
+                        fill={theme.palette.type === 'dark' ? 'white' : 'black'}
+                        className={classes.iconPatt}
+                      />
+                    ),
+                    onClick: (ev) => genericClickHandler(ev, handleClone),
+                    disabled: !CAN(keys.CLONE_DESIGN.action, keys.CLONE_DESIGN.subject),
+                    show: visibility !== VISIBILITY.PRIVATE,
+                  },
+                  {
+                    label: 'Design',
+                    icon: <OutlinedPatternIcon className={classes.iconPatt} />,
+                    onClick: (ev) => genericClickHandler(ev, setSelectedPatterns),
+                    disabled: !CAN(keys.EDIT_DESIGN.action, keys.EDIT_DESIGN.subject),
+                    show: visibility === VISIBILITY.PRIVATE,
+                  },
+                  {
+                    label: 'Download',
+                    icon: <GetAppIcon data-cy="download-button" />,
+                    onClick: handleDownload,
+                    disabled: !CAN(keys.DOWNLOAD_A_DESIGN.action, keys.DOWNLOAD_A_DESIGN.subject),
+                    show: true,
+                  },
+                  {
+                    label: 'Validate',
+                    icon: <CheckIcon className={classes.iconPatt} />,
+                    onClick: (e) => genericClickHandler(e, handleVerify),
+                    disabled: !CAN(keys.VALIDATE_DESIGN.action, keys.VALIDATE_DESIGN.subject),
+                    show: true,
                   },
                   {
                     label: 'Deploy',
                     icon: <DoneAllIcon className={classes.iconPatt} />,
                     onClick: (e) => genericClickHandler(e, handleDeploy),
                     disabled: !CAN(keys.DEPLOY_DESIGN.action, keys.DEPLOY_DESIGN.subject),
+                    show: true,
                   },
                   {
                     label: 'Undeploy',
                     icon: <UndeployIcon fill={'currentColor'} className={classes.iconPatt} />,
                     onClick: (e) => genericClickHandler(e, handleUnDeploy),
                     disabled: !CAN(keys.DEPLOY_DESIGN.action, keys.DEPLOY_DESIGN.subject),
+                    show: true,
                   },
                 ]}
               />
-              <TooltipButton
-                title="Download"
-                variant="contained"
-                color="primary"
-                onClick={handleDownload}
-                className={classes.testsButton}
-              >
-                <GetAppIcon data-cy="download-button" />
-                <span className={classes.btnText}> Download </span>
-              </TooltipButton>
-              {visibility === VISIBILITY.PRIVATE ? (
-                <TooltipButton
-                  title="Design"
-                  variant="contained"
-                  color="primary"
-                  onClick={(ev) => genericClickHandler(ev, setSelectedPatterns)}
-                  className={classes.testsButton}
-                  disabled={!CAN(keys.EDIT_DESIGN.action, keys.EDIT_DESIGN.subject)}
-                >
-                  <Avatar
-                    src="/static/img/pattern_trans.svg"
-                    className={classes.iconPatt}
-                    imgProps={{ height: '16px', width: '16px' }}
-                  />
-                  <span className={classes.btnText}> Design </span>
-                </TooltipButton>
-              ) : (
-                <TooltipButton
-                  title="Clone"
-                  variant="contained"
-                  color="primary"
-                  onClick={(ev) => genericClickHandler(ev, handleClone)}
-                  className={classes.testsButton}
-                  disabled={!CAN(keys.CLONE_DESIGN.action, keys.CLONE_DESIGN.subject)}
-                >
-                  <CloneIcon fill="#ffffff" className={classes.iconPatt} />
-                  <span className={classes.cloneBtnText}> Clone </span>
-                </TooltipButton>
-              )}
-
-              {userCanEdit && (
-                <TooltipButton
-                  title="Edit In Configurator"
-                  variant="contained"
-                  color="primary"
-                  onClick={(ev) => genericClickHandler(ev, editInConfigurator)}
-                  disabled={!CAN(keys.EDIT_DESIGN.action, keys.EDIT_DESIGN.subject)}
-                  className={classes.testsButton}
-                >
-                  <Edit style={{ fill: '#fff' }} className={classes.iconPatt} />
-                  <span className={classes.cloneBtnText}> Edit </span>
-                </TooltipButton>
-              )}
-              <TooltipButton
-                title="Pattern Information"
-                variant="contained"
-                color="primary"
-                onClick={(ev) => genericClickHandler(ev, handleInfoModal)}
-                className={classes.testsButton}
-                disabled={!CAN(keys.DETAILS_OF_DESIGN.action, keys.DETAILS_OF_DESIGN.subject)}
-              >
-                <InfoOutlinedIcon style={{ fill: '#fff' }} className={classes.iconPatt} />
-                <span className={classes.btnText}> Info </span>
-              </TooltipButton>
             </div>
           </div>
-        </div>
+        </UsesSistent>
 
         {/* BACK PART */}
         <>

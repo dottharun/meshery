@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
   },
   bottomPart: {
     display: 'flex',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     marginTop: '1rem',
   },
