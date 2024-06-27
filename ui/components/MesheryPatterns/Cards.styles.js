@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   cardButtons: {
     display: 'flex',
     flexWrap: 'wrap',
-    marginTop: '50px',
+    // marginTop: '50px',
     height: '100%',
     gap: '.5rem',
   },
@@ -71,6 +71,7 @@ const useStyles = makeStyles((theme) => ({
   },
   lastRunText: {
     marginRight: '0.5rem',
+    marginBottom: '1rem',
   },
   cardHeaderRight: {
     display: 'flex',
@@ -86,10 +87,10 @@ const useStyles = makeStyles((theme) => ({
     height: '24px',
   },
   btnText: {
-    [theme.breakpoints.down(1370)]: { display: 'none' },
-    [`${theme.breakpoints.up(1920)} and (max-width: 2200px)`]: {
-      display: 'none',
-    },
+    // [theme.breakpoints.down(1370)]: { display: 'none' },
+    // [`${theme.breakpoints.up(1920)} and (max-width: 2200px)`]: {
+    //   display: 'none',
+    // },
     marginLeft: '5px',
     display: 'flex',
     justifyContent: 'center',

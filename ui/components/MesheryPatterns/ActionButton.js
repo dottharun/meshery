@@ -17,6 +17,7 @@ export default function ActionButton({
   defaultActionIcon,
   defaultActionTooltipTitle,
   defaultActionClick,
+  defaultActionDisabled,
   options,
 }) {
   const [open, setOpen] = React.useState(false);
@@ -49,13 +50,19 @@ export default function ActionButton({
           aria-label="Button group with a nested menu"
         >
           <CustomTooltip title={defaultActionTooltipTitle} placement="top" interactive>
-            <Button onClick={defaultActionClick} variant="contained">
-              {defaultActionIcon}
-              {defaultActionLabel}
-            </Button>
+            <div>
+              <Button
+                onClick={defaultActionClick}
+                variant="contained"
+                disabled={defaultActionDisabled}
+              >
+                {defaultActionIcon}
+                {defaultActionLabel}
+              </Button>
+            </div>
           </CustomTooltip>
           <Button size="small" onClick={handleToggle} variant="contained">
-            <DropDownIcon />
+            <DropDownIcon width="18" height="18" />
           </Button>
         </ButtonGroup>
       </div>

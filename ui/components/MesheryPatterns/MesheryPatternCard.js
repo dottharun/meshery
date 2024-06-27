@@ -161,20 +161,22 @@ function MesheryPatternCard_({
           <div className={classes.bottomPart}>
             <div className={classes.cardButtons}>
               <CustomTooltip title="Design Information" placement="top" interactive>
-                <Button
-                  variant="outlined"
-                  onClick={(ev) => genericClickHandler(ev, handleInfoModal)}
-                  className={classes.testsButton}
-                  disabled={!CAN(keys.DETAILS_OF_DESIGN.action, keys.DETAILS_OF_DESIGN.subject)}
-                >
-                  <InfoIcon style={{ fill: WHITE }} className={classes.iconPatt} />
-                  <span className={classes.btnText}> Details </span>
-                </Button>
+                <div>
+                  <Button
+                    variant="outlined"
+                    onClick={(ev) => genericClickHandler(ev, handleInfoModal)}
+                    className={classes.testsButton}
+                    disabled={!CAN(keys.DETAILS_OF_DESIGN.action, keys.DETAILS_OF_DESIGN.subject)}
+                  >
+                    <InfoIcon style={{ fill: WHITE }} className={classes.iconPatt} />
+                    <span className={classes.btnText}> Details </span>
+                  </Button>
+                </div>
               </CustomTooltip>
               <ActionButton
                 defaultActionClick={(e) => genericClickHandler(e, editInConfigurator)}
                 defaultActionLabel="Edit"
-                defaultActionIcon={<EditIcon className={classes.iconPatt} />}
+                defaultActionIcon={<EditIcon fill={WHITE} className={classes.iconPatt} />}
                 defaultActionTooltipTitle={'Edit in Configurator'}
                 defaultActionDisabled={!userCanEdit}
                 options={[
@@ -206,7 +208,12 @@ function MesheryPatternCard_({
                   },
                   {
                     label: 'Design',
-                    icon: <OutlinedPatternIcon className={classes.iconPatt} />,
+                    icon: (
+                      <OutlinedPatternIcon
+                        fill={theme.palette.type === 'dark' ? 'white' : 'black'}
+                        className={classes.iconPatt}
+                      />
+                    ),
                     onClick: (ev) => genericClickHandler(ev, setSelectedPatterns),
                     disabled: !CAN(keys.EDIT_DESIGN.action, keys.EDIT_DESIGN.subject),
                     show: visibility === VISIBILITY.PRIVATE,
