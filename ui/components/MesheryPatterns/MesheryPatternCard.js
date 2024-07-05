@@ -6,8 +6,10 @@ import {
   EditIcon,
   InfoIcon,
   OutlinedPatternIcon,
+  RenderMarkdown,
   Typography,
   WHITE,
+  redDelete,
 } from '@layer5/sistent';
 import { UsesSistent } from '../SistentWrapper';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -93,6 +95,8 @@ function MesheryPatternCard_({
   const userCanEdit =
     CAN(keys.EDIT_DESIGN.action, keys.EDIT_DESIGN.subject) || user?.user_id == pattern?.user_id; // allow if owner
 
+  const descriptionData = pattern?.catalog_data?.pattern_info;
+
   return (
     <>
       {fullScreen && (
@@ -146,7 +150,7 @@ function MesheryPatternCard_({
                   <Typography
                     variant="caption"
                     style={{
-                      fontStyle: 'italic',
+                      // fontStyle: 'italic',
                       color: `${
                         theme.palette.type === 'dark' ? 'rgba(255, 255, 255, 0.7)' : '#647881'
                       }`,
@@ -157,6 +161,11 @@ function MesheryPatternCard_({
                 ) : null}
               </div>
             </div>
+            {descriptionData ? (
+              <RenderMarkdown content={decodeURIComponent(descriptionData)} />
+            ) : (
+              'No description Provided.'
+            )}
           </div>
           <div className={classes.bottomPart}>
             <div className={classes.cardButtons}>
@@ -185,7 +194,6 @@ function MesheryPatternCard_({
                     icon: <DryRunIcon className={classes.iconPatt} />,
                     onClick: (e) => genericClickHandler(e, handleDryRun),
                     disabled: !CAN(keys.VALIDATE_DESIGN.action, keys.VALIDATE_DESIGN.subject),
-                    show: true,
                   },
                   {
                     label: 'Unpublish',
@@ -223,28 +231,25 @@ function MesheryPatternCard_({
                     icon: <GetAppIcon data-cy="download-button" />,
                     onClick: handleDownload,
                     disabled: !CAN(keys.DOWNLOAD_A_DESIGN.action, keys.DOWNLOAD_A_DESIGN.subject),
-                    show: true,
                   },
                   {
                     label: 'Validate',
                     icon: <CheckIcon className={classes.iconPatt} />,
                     onClick: (e) => genericClickHandler(e, handleVerify),
                     disabled: !CAN(keys.VALIDATE_DESIGN.action, keys.VALIDATE_DESIGN.subject),
-                    show: true,
                   },
                   {
                     label: 'Deploy',
                     icon: <DoneAllIcon className={classes.iconPatt} />,
                     onClick: (e) => genericClickHandler(e, handleDeploy),
                     disabled: !CAN(keys.DEPLOY_DESIGN.action, keys.DEPLOY_DESIGN.subject),
-                    show: true,
                   },
+                  { isDivider: true },
                   {
-                    label: 'Undeploy',
-                    icon: <UndeployIcon fill={'currentColor'} className={classes.iconPatt} />,
+                    label: <div style={{ color: redDelete.light }}>Undeploy</div>,
+                    icon: <UndeployIcon fill={redDelete.light} className={classes.iconPatt} />,
                     onClick: (e) => genericClickHandler(e, handleUnDeploy),
-                    disabled: !CAN(keys.DEPLOY_DESIGN.action, keys.DEPLOY_DESIGN.subject),
-                    show: true,
+                    disabled: !CAN(keys.UNDEPLOY_DESIGN.action, keys.UNDEPLOY_DESIGN.subject),
                   },
                 ]}
               />

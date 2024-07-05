@@ -10,6 +10,8 @@ import {
   DropDownIcon,
   CustomTooltip,
   WHITE,
+  Divider,
+  Box,
 } from '@layer5/sistent';
 
 export default function ActionButton({
@@ -85,20 +87,28 @@ export default function ActionButton({
           <ClickAwayListener onClickAway={handleClose}>
             <MenuList id="split-button-menu" autoFocusItem>
               {options
-                .filter((option) => option.show)
-                .map((option, index) => (
-                  <MenuItem
-                    disabled={option.disabled}
-                    key={option}
-                    onClick={(event) => {
-                      handleMenuItemClick(event);
-                      option.onClick(event, index);
-                    }}
-                  >
-                    <div style={{ marginRight: '0.5rem' }}>{option.icon}</div>
-                    {option.label}
-                  </MenuItem>
-                ))}
+                .filter((option) => option.show !== false)
+                .map((option, index) =>
+                  option.isDivider ? (
+                    <Divider />
+                  ) : (
+                    <MenuItem
+                      disabled={option.disabled}
+                      key={option}
+                      onClick={(event) => {
+                        handleMenuItemClick(event);
+                        option.onClick(event, index);
+                      }}
+                    >
+                      <Box display="flex" width="12.5rem">
+                        {option.icon}
+                        <Box textAlign="right" flexGrow={1}>
+                          {option.label}
+                        </Box>
+                      </Box>
+                    </MenuItem>
+                  ),
+                )}
             </MenuList>
           </ClickAwayListener>
         </Paper>
