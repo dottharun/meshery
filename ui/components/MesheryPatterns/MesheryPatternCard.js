@@ -10,6 +10,8 @@ import {
   Typography,
   WHITE,
   redDelete,
+  ActionButton,
+  Box,
 } from '@layer5/sistent';
 import { UsesSistent } from '../SistentWrapper';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -35,7 +37,6 @@ import { Provider } from 'react-redux';
 import { store } from '../../store';
 import CAN from '@/utils/can';
 import { keys } from '@/utils/permission_constants';
-import ActionButton from './ActionButton';
 import DryRunIcon from '@/assets/icons/DryRunIcon';
 import CheckIcon from '@/assets/icons/CheckIcon';
 import PatternIcon from '@/assets/icons/Pattern';
@@ -123,7 +124,7 @@ function MesheryPatternCard_({
         }
       >
         {/* FRONT PART */}
-        <UsesSistent>
+        <div>
           <div>
             <div style={{ height: 'max', display: 'flex', justifyContent: 'space-between' }}>
               <Typography
@@ -182,80 +183,85 @@ function MesheryPatternCard_({
                   </Button>
                 </div>
               </CustomTooltip>
-              <ActionButton
-                defaultActionClick={(e) => genericClickHandler(e, editInConfigurator)}
-                defaultActionLabel="Edit"
-                defaultActionIcon={<EditIcon fill={WHITE} className={classes.iconPatt} />}
-                defaultActionTooltipTitle={'Edit in Configurator'}
-                defaultActionDisabled={!userCanEdit}
-                options={[
-                  {
-                    label: 'Dry Run',
-                    icon: <DryRunIcon className={classes.iconPatt} />,
-                    onClick: (e) => genericClickHandler(e, handleDryRun),
-                    disabled: !CAN(keys.VALIDATE_DESIGN.action, keys.VALIDATE_DESIGN.subject),
-                  },
-                  {
-                    label: 'Unpublish',
-                    icon: <PublicIcon className={classes.iconPatt} />,
-                    onClick: (e) => genericClickHandler(e, handleUnpublishModal),
-                    disabled: !CAN(keys.UNPUBLISH_DESIGN.action, keys.UNPUBLISH_DESIGN.subject),
-                    show: canPublishPattern && visibility === VISIBILITY.PUBLISHED,
-                  },
-                  {
-                    label: 'Clone',
-                    icon: (
-                      <CloneIcon
-                        fill={theme.palette.type === 'dark' ? 'white' : 'black'}
-                        className={classes.iconPatt}
-                      />
-                    ),
-                    onClick: (ev) => genericClickHandler(ev, handleClone),
-                    disabled: !CAN(keys.CLONE_DESIGN.action, keys.CLONE_DESIGN.subject),
-                    show: visibility !== VISIBILITY.PRIVATE,
-                  },
-                  {
-                    label: 'Design',
-                    icon: (
-                      <OutlinedPatternIcon
-                        fill={theme.palette.type === 'dark' ? 'white' : 'black'}
-                        className={classes.iconPatt}
-                      />
-                    ),
-                    onClick: (ev) => genericClickHandler(ev, setSelectedPatterns),
-                    disabled: !CAN(keys.EDIT_DESIGN.action, keys.EDIT_DESIGN.subject),
-                    show: visibility === VISIBILITY.PRIVATE,
-                  },
-                  {
-                    label: 'Download',
-                    icon: <GetAppIcon data-cy="download-button" />,
-                    onClick: handleDownload,
-                    disabled: !CAN(keys.DOWNLOAD_A_DESIGN.action, keys.DOWNLOAD_A_DESIGN.subject),
-                  },
-                  {
-                    label: 'Validate',
-                    icon: <CheckIcon className={classes.iconPatt} />,
-                    onClick: (e) => genericClickHandler(e, handleVerify),
-                    disabled: !CAN(keys.VALIDATE_DESIGN.action, keys.VALIDATE_DESIGN.subject),
-                  },
-                  {
-                    label: 'Deploy',
-                    icon: <DoneAllIcon className={classes.iconPatt} />,
-                    onClick: (e) => genericClickHandler(e, handleDeploy),
-                    disabled: !CAN(keys.DEPLOY_DESIGN.action, keys.DEPLOY_DESIGN.subject),
-                  },
-                  { isDivider: true },
-                  {
-                    label: <div style={{ color: redDelete.light }}>Undeploy</div>,
-                    icon: <UndeployIcon fill={redDelete.light} className={classes.iconPatt} />,
-                    onClick: (e) => genericClickHandler(e, handleUnDeploy),
-                    disabled: !CAN(keys.UNDEPLOY_DESIGN.action, keys.UNDEPLOY_DESIGN.subject),
-                  },
-                ]}
-              />
+              <Box sx={{ '&& .MuiButtonGroup-grouped': { borderColor: 'common.white' } }}>
+                <ActionButton
+                  defaultActionClick={(e) => genericClickHandler(e, editInConfigurator)}
+                  defaultActionDisabled={!userCanEdit}
+                  label={
+                    <>
+                      <EditIcon fill={WHITE} className={classes.iconPatt} />
+                      <span>Edit</span>
+                    </>
+                  }
+                  options={[
+                    {
+                      label: 'Dry Run',
+                      icon: <DryRunIcon className={classes.iconPatt} />,
+                      onClick: (e) => genericClickHandler(e, handleDryRun),
+                      disabled: !CAN(keys.VALIDATE_DESIGN.action, keys.VALIDATE_DESIGN.subject),
+                    },
+                    {
+                      label: 'Unpublish',
+                      icon: <PublicIcon className={classes.iconPatt} />,
+                      onClick: (e) => genericClickHandler(e, handleUnpublishModal),
+                      disabled: !CAN(keys.UNPUBLISH_DESIGN.action, keys.UNPUBLISH_DESIGN.subject),
+                      show: canPublishPattern && visibility === VISIBILITY.PUBLISHED,
+                    },
+                    {
+                      label: 'Clone',
+                      icon: (
+                        <CloneIcon
+                          fill={theme.palette.type === 'dark' ? 'white' : 'black'}
+                          className={classes.iconPatt}
+                        />
+                      ),
+                      onClick: (ev) => genericClickHandler(ev, handleClone),
+                      disabled: !CAN(keys.CLONE_DESIGN.action, keys.CLONE_DESIGN.subject),
+                      show: visibility !== VISIBILITY.PRIVATE,
+                    },
+                    {
+                      label: 'Design',
+                      icon: (
+                        <OutlinedPatternIcon
+                          fill={theme.palette.type === 'dark' ? 'white' : 'black'}
+                          className={classes.iconPatt}
+                        />
+                      ),
+                      onClick: (ev) => genericClickHandler(ev, setSelectedPatterns),
+                      disabled: !CAN(keys.EDIT_DESIGN.action, keys.EDIT_DESIGN.subject),
+                      show: visibility === VISIBILITY.PRIVATE,
+                    },
+                    {
+                      label: 'Download',
+                      icon: <GetAppIcon data-cy="download-button" />,
+                      onClick: handleDownload,
+                      disabled: !CAN(keys.DOWNLOAD_A_DESIGN.action, keys.DOWNLOAD_A_DESIGN.subject),
+                    },
+                    {
+                      label: 'Validate',
+                      icon: <CheckIcon className={classes.iconPatt} />,
+                      onClick: (e) => genericClickHandler(e, handleVerify),
+                      disabled: !CAN(keys.VALIDATE_DESIGN.action, keys.VALIDATE_DESIGN.subject),
+                    },
+                    {
+                      label: 'Deploy',
+                      icon: <DoneAllIcon className={classes.iconPatt} />,
+                      onClick: (e) => genericClickHandler(e, handleDeploy),
+                      disabled: !CAN(keys.DEPLOY_DESIGN.action, keys.DEPLOY_DESIGN.subject),
+                    },
+                    { isDivider: true },
+                    {
+                      label: <div style={{ color: redDelete.light }}>Undeploy</div>,
+                      icon: <UndeployIcon fill={redDelete.light} className={classes.iconPatt} />,
+                      onClick: (e) => genericClickHandler(e, handleUnDeploy),
+                      disabled: !CAN(keys.UNDEPLOY_DESIGN.action, keys.UNDEPLOY_DESIGN.subject),
+                    },
+                  ]}
+                />
+              </Box>
             </div>
           </div>
-        </UsesSistent>
+        </div>
 
         {/* BACK PART */}
         <>
@@ -373,7 +379,9 @@ function MesheryPatternCard_({
 export const MesheryPatternCard = (props) => {
   return (
     <Provider store={store}>
-      <MesheryPatternCard_ {...props} />
+      <UsesSistent>
+        <MesheryPatternCard_ {...props} />
+      </UsesSistent>
     </Provider>
   );
 };
