@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
   backGrid: {
     marginBottom: '0.25rem',
-    minHeight: '6rem',
+    // minHeight: '6rem',
     position: 'relative',
   },
   updateDeleteButtons: {

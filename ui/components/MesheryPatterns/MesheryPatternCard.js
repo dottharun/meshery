@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Avatar, Divider, Grid, IconButton, Link } from '@material-ui/core';
+import { Avatar, Grid, IconButton, Link } from '@material-ui/core';
 import {
   Button,
   CustomTooltip,
@@ -12,6 +12,7 @@ import {
   redDelete,
   ActionButton,
   Box,
+  FlipCard,
 } from '@layer5/sistent';
 import { UsesSistent } from '../SistentWrapper';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -19,7 +20,6 @@ import Save from '@material-ui/icons/Save';
 import Fullscreen from '@material-ui/icons/Fullscreen';
 import Moment from 'react-moment';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import FlipCard from '../FlipCard';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import FullscreenExit from '@material-ui/icons/FullscreenExit';
 import UndeployIcon from '../../public/static/img/UndeployIcon';
@@ -124,7 +124,7 @@ function MesheryPatternCard_({
         }
       >
         {/* FRONT PART */}
-        <div>
+        <Box sx={{ height: '20.25rem', display: 'flex', flexDirection: 'column' }}>
           <div>
             <div style={{ height: 'max', display: 'flex', justifyContent: 'space-between' }}>
               <Typography
@@ -162,11 +162,13 @@ function MesheryPatternCard_({
                 ) : null}
               </div>
             </div>
-            {descriptionData ? (
-              <RenderMarkdown content={decodeURIComponent(descriptionData)} />
-            ) : (
-              'No description Provided.'
-            )}
+          </div>
+          <div style={{ whiteSpace: 'normal', flex: 1, overflowY: 'auto' }}>
+            <RenderMarkdown
+              content={
+                descriptionData ? decodeURIComponent(descriptionData) : 'No description provided.'
+              }
+            />
           </div>
           <div className={classes.bottomPart}>
             <div className={classes.cardButtons}>
@@ -268,10 +270,76 @@ function MesheryPatternCard_({
               </Box>
             </div>
           </div>
-        </div>
+        </Box>
 
         {/* BACK PART */}
-        <>
+        <Box sx={{ height: '20.25rem', display: 'flex', flexDirection: 'column' }}>
+          <div>
+            <div style={{ height: 'max', display: 'flex', justifyContent: 'space-between' }}>
+              <Typography
+                style={{
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  width: '20rem',
+                }}
+                variant="h6"
+                component="div"
+              >
+                {name}
+              </Typography>
+              <div className={classes.cardHeaderRight}>
+                <Link href={`${MESHERY_CLOUD_PROD}/user/${pattern?.user_id}`} target="_blank">
+                  <Avatar alt="profile-avatar" src={owner?.avatar_url} />
+                </Link>
+              </div>
+            </div>
+            <div className={classes.lastRunText}>
+              <div>
+                {created_at ? (
+                  <Typography
+                    variant="caption"
+                    style={{
+                      // fontStyle: 'italic',
+                      color: `${
+                        theme.palette.type === 'dark' ? 'rgba(255, 255, 255, 0.7)' : '#647881'
+                      }`,
+                    }}
+                  >
+                    Created On: <Moment format="LLL">{created_at}</Moment>
+                  </Typography>
+                ) : null}
+              </div>
+            </div>
+          </div>
+          <Box sx={{ flex: 1, '&& .CodeMirror': { height: '13rem' } }}>
+            {catalogContentKeys.length === 0 ? (
+              <CodeMirror
+                value={showCode && pattern_file}
+                className={fullScreen ? classes.fullScreenCodeMirror : ''}
+                options={{
+                  theme: 'material',
+                  lineNumbers: true,
+                  lineWrapping: true,
+                  gutters: ['CodeMirror-lint-markers'],
+                  // @ts-ignore
+                  lint: true,
+                  mode: 'text/x-yaml',
+                  readOnly: isReadOnly,
+                }}
+                onChange={(_, data, val) => setYaml(val)}
+              />
+            ) : (
+              catalogContentKeys.map((title, index) => (
+                <>
+                  <Typography variant="h6" className={classes.yamlDialogTitleText}>
+                    {title}
+                  </Typography>
+                  <Typography variant="body2">{catalogContentValues[index]}</Typography>
+                </>
+              ))
+            )}
+          </Box>
           <Grid
             className={classes.backGrid}
             container
@@ -279,81 +347,24 @@ function MesheryPatternCard_({
             alignContent="space-between"
             alignItems="center"
           >
-            <Grid item xs={12} className={classes.yamlDialogTitle}>
-              <Typography variant="h6" className={classes.yamlDialogTitleText}>
-                {name}
-              </Typography>
-              <div className={classes.cardHeaderRight}>
-                <Link href={`${MESHERY_CLOUD_PROD}/user/${pattern?.user_id}`} target="_blank">
-                  <Avatar alt="profile-avatar" src={owner?.avatar_url} />
-                </Link>
-                <CustomTooltip title="Enter Fullscreen" arrow interactive placement="top">
-                  <IconButton
-                    onClick={(ev) =>
-                      genericClickHandler(ev, () => {
-                        {
-                          toggleFullScreen();
-                        }
-                      })
-                    }
-                  >
-                    {fullScreen ? <FullscreenExit /> : <Fullscreen />}
-                  </IconButton>
-                </CustomTooltip>
-              </div>
-            </Grid>
-            <Grid item xs={12} onClick={(ev) => genericClickHandler(ev, () => {})}>
-              <Divider variant="fullWidth" light />
-              {catalogContentKeys.length === 0 ? (
-                <CodeMirror
-                  value={showCode && pattern_file}
-                  className={fullScreen ? classes.fullScreenCodeMirror : ''}
-                  options={{
-                    theme: 'material',
-                    lineNumbers: true,
-                    lineWrapping: true,
-                    gutters: ['CodeMirror-lint-markers'],
-                    // @ts-ignore
-                    lint: true,
-                    mode: 'text/x-yaml',
-                    readOnly: isReadOnly,
-                  }}
-                  onChange={(_, data, val) => setYaml(val)}
-                />
-              ) : (
-                catalogContentKeys.map((title, index) => (
-                  <>
-                    <Typography variant="h6" className={classes.yamlDialogTitleText}>
-                      {title}
-                    </Typography>
-                    <Typography variant="body2">{catalogContentValues[index]}</Typography>
-                  </>
-                ))
-              )}
-            </Grid>
-
-            <Grid item xs={8}>
-              <div className={classes.lastRunText}>
-                <div>
-                  {created_at ? (
-                    <Typography
-                      variant="caption"
-                      style={{
-                        fontStyle: 'italic',
-                        color: `${
-                          theme.palette.type === 'dark' ? 'rgba(255, 255, 255, 0.7)' : '#647881'
-                        }`,
-                      }}
-                    >
-                      Created at: <Moment format="LLL">{created_at}</Moment>
-                    </Typography>
-                  ) : null}
-                </div>
-              </div>
-            </Grid>
             <Grid item xs={12}>
               {isReadOnly ? null : (
                 <div className={classes.updateDeleteButtons}>
+                  {/* Fullscreen  */}
+                  <CustomTooltip title="Enter Fullscreen" arrow interactive placement="bottom">
+                    <IconButton
+                      onClick={(ev) =>
+                        genericClickHandler(ev, () => {
+                          {
+                            toggleFullScreen();
+                          }
+                        })
+                      }
+                    >
+                      {fullScreen ? <FullscreenExit /> : <Fullscreen />}
+                    </IconButton>
+                  </CustomTooltip>
+
                   {/* Save button */}
                   <CustomTooltip title="Save" arrow interactive placement="bottom">
                     <IconButton
@@ -377,7 +388,7 @@ function MesheryPatternCard_({
               )}
             </Grid>
           </Grid>
-        </>
+        </Box>
       </FlipCard>
     </>
   );
