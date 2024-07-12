@@ -171,7 +171,14 @@ function MesheryPatternCard_({
           <div className={classes.bottomPart}>
             <div className={classes.cardButtons}>
               <CustomTooltip title="Design Information" placement="top" interactive>
-                <div>
+                <Box
+                  sx={{
+                    '&& .MuiButton-outlined': {
+                      color: 'text.neutral.default',
+                      '&:hover': { backgroundColor: 'background.hover' },
+                    },
+                  }}
+                >
                   <Button
                     variant="outlined"
                     onClick={(ev) => genericClickHandler(ev, handleInfoModal)}
@@ -181,7 +188,7 @@ function MesheryPatternCard_({
                     <InfoIcon style={{ fill: WHITE }} className={classes.iconPatt} />
                     <span className={classes.btnText}> Details </span>
                   </Button>
-                </div>
+                </Box>
               </CustomTooltip>
               <Box sx={{ '&& .MuiButtonGroup-grouped': { borderColor: 'common.white' } }}>
                 <ActionButton
